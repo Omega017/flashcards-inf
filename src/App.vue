@@ -1,111 +1,109 @@
 <template>
-  <v-app light>
+  <v-app id="inspire">
     <v-navigation-drawer
       fixed
-      :mini-variant="miniVariant"
-      :clipped="clipped"
+      :clipped="$vuetify.breakpoint.width > 1264"
       v-model="drawer"
+      class="grey lighten-4"
       app
     >
-      <v-list>
-        <v-list-tile
-          v-for="(item, i) in items"
-          :key="i"
-          value="true"
-        >
-          <v-list-tile-action>
-            <v-icon light v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list
+        dense
+        class="grey lighten-4"
+      >
+        <template v-for="(item, i) in items">
+          <v-layout
+            row
+            v-if="item.heading"
+            align-center
+            :key="i"
+          >
+            <v-flex xs6>
+              <v-subheader v-if="item.heading">
+                {{ item.heading }}
+              </v-subheader>
+            </v-flex>
+            <v-flex xs6 class="text-xs-right">
+              <v-btn small flat>edit</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-divider
+            dark
+            v-else-if="item.divider"
+            class="my-4"
+            :key="i"
+          ></v-divider>
+          <v-list-tile
+            :key="i"
+            v-else
+            @click=""
+          >
+            <v-list-tile-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title class="grey--text">
+                {{ item.text }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
+    <v-toolbar color="amber" app absolute clipped-left>
+      <v-toolbar-side-icon v-if="$vuetify.breakpoint.width <= 1264" @click="drawer = !drawer"></v-toolbar-side-icon>
+      <span class="title">Google&nbsp;<span class="text">Keep</span></span>
     </v-toolbar>
     <v-content>
-      <v-container fluid>
-        <v-slide-y-transition mode="out-in">
-          <v-layout column align-center>
-            <img src="/static/v.png" alt="Vuetify.js" class="mb-5" />
-            <blockquote>
-              &#8220;First, solve the problem. Then, write the code.&#8221;
-              <footer>
-                <small>
-                  <em>&mdash;John Johnson</em>
-                </small>
-              </footer>
-            </blockquote>
-          </v-layout>
-        </v-slide-y-transition>
+      <v-container fluid fill-height class="grey lighten-4">
+        <v-layout justify-center align-center>
+          <v-tooltip right>
+            <v-btn icon large :href="source" target="_blank" slot="activator">
+              <v-icon large>code</v-icon>
+            </v-btn>
+            <span>Source</span>
+          </v-tooltip>
+        </v-layout>
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      temporary
-      fixed
-      :right="right"
-      v-model="rightDrawer"
-      app
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; 2017</span>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
   export default {
-    data() {
-      return {
-        clipped: false,
-        drawer: true,
-        fixed: false,
-        items: [{
-          icon: 'bubble_chart',
-          title: 'Inspire',
-        }],
-        miniVariant: false,
-        right: true,
-        rightDrawer: false,
-        title: 'Vuetify.js',
-      };
-    },
-  };
+    data: () => ({
+      drawer: null,
+      items: [
+        { icon: 'lightbulb_outline', text: 'Notes' },
+        { icon: 'touch_app', text: 'Reminders' },
+        { divider: true },
+        { heading: 'Labels' },
+        { icon: 'add', text: 'Create new label' },
+        { divider: true },
+        { icon: 'archive', text: 'Archive' },
+        { icon: 'delete', text: 'Trash' },
+        { divider: true },
+        { icon: 'settings', text: 'Settings' },
+        { icon: 'chat_bubble', text: 'Trash' },
+        { icon: 'help', text: 'Help' },
+        { icon: 'phonelink', text: 'App downloads' },
+        { icon: 'keyboard', text: 'Keyboard shortcuts' }
+      ]
+    }),
+    props: {
+      source: String
+    }
+  }
 </script>
+
+<style>
+  #keep main .container {
+    height: 660px;
+  }
+  .navigation-drawer__border {
+    display: none;
+  }
+  .text {
+    font-weight: 400;
+  }
+</style>
